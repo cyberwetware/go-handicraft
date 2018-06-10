@@ -1,5 +1,5 @@
 # go-handicraft
-Code Snippets by Go
+Code Snippets in Go
 
 #### How to build
 
