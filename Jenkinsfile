@@ -76,7 +76,7 @@ pipeline {
         steps {
           dir ('/home/jenkins/go/src/github/cyberwetware/go-handicraft/charts/go-handicraft') {
             container('go') {
-              sh 'jx step changelog --version v\$(cat ../../VERSION)'
+              // sh 'jx step changelog --version v\$(cat ../../VERSION)'
 
               // release the helm chart
               // sh 'make release'
