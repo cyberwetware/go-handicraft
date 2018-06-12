@@ -56,7 +56,7 @@ pipeline {
                 sh "jx step validate --min-jx-version 1.1.73"
                 sh "jx step git credentials"
 
-                sh "make tag"
+                // sh "make tag"
             }
             dir ('/home/jenkins/go/src/REPLACE_ME_GIT_PROVIDER/REPLACE_ME_ORG/REPLACE_ME_APP_NAME') {
               container('go') {
