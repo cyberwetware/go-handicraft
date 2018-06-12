@@ -3,9 +3,9 @@ pipeline {
         label "jenkins-go"
     }
     environment {
-      ORG               = 'REPLACE_ME_ORG'
-      APP_NAME          = 'REPLACE_ME_APP_NAME'
-      GIT_PROVIDER      = 'REPLACE_ME_GIT_PROVIDER'
+      ORG               = 'cyberwetware'
+      APP_NAME          = 'go-handicraft'
+      GIT_PROVIDER      = 'github'
       CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
     }
     stages {
@@ -19,7 +19,7 @@ pipeline {
           HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
         }
         steps {
-          dir ('/home/jenkins/go/src/REPLACE_ME_GIT_PROVIDER/REPLACE_ME_ORG/REPLACE_ME_APP_NAME') {
+          dir ('/home/jenkins/go/src/github/cyberwetware/go-handicraft') {
             checkout scm
             container('go') {
               sh "make linux"
@@ -29,7 +29,7 @@ pipeline {
               sh "jx step post build --image \$JENKINS_X_DOCKER_REGISTRY_SERVICE_HOST:\$JENKINS_X_DOCKER_REGISTRY_SERVICE_PORT/$ORG/$APP_NAME:$PREVIEW_VERSION"
             }
           }
-          dir ('/home/jenkins/go/src/REPLACE_ME_GIT_PROVIDER/REPLACE_ME_ORG/REPLACE_ME_APP_NAME/charts/preview') {
+          dir ('/home/jenkins/go/src/github/cyberwetware/go-handicraft/charts/preview') {
             container('go') {
               sh "make preview"
               sh "jx preview --app $APP_NAME --dir ../.."
@@ -43,12 +43,12 @@ pipeline {
         }
         steps {
           container('go') {
-            dir ('/home/jenkins/go/src/REPLACE_ME_GIT_PROVIDER/REPLACE_ME_ORG/REPLACE_ME_APP_NAME') {
+            dir ('/home/jenkins/go/src/github/cyberwetware/go-handicraft') {
               checkout scm
               // so we can retrieve the version in later steps
               sh "echo \$(jx-release-version) > VERSION"
             }
-            dir ('/home/jenkins/go/src/REPLACE_ME_GIT_PROVIDER/REPLACE_ME_ORG/REPLACE_ME_APP_NAME/charts/REPLACE_ME_APP_NAME') {
+            dir ('/home/jenkins/go/src/github/cyberwetware/go-handicraft/charts/go-handicraft') {
                 // ensure we're not on a detached head
                 sh "git checkout master"
                 // until we switch to the new kubernetes / jenkins credential implementation use git credentials store
@@ -58,7 +58,7 @@ pipeline {
 
                 // sh "make tag"
             }
-            dir ('/home/jenkins/go/src/REPLACE_ME_GIT_PROVIDER/REPLACE_ME_ORG/REPLACE_ME_APP_NAME') {
+            dir ('/home/jenkins/go/src/github/cyberwetware/go-handicraft') {
               container('go') {
                 sh "make build"
                 sh 'export VERSION=`cat VERSION` && skaffold run -f skaffold.yaml'
@@ -74,7 +74,7 @@ pipeline {
           branch 'master'
         }
         steps {
-          dir ('/home/jenkins/go/src/REPLACE_ME_GIT_PROVIDER/REPLACE_ME_ORG/REPLACE_ME_APP_NAME/charts/REPLACE_ME_APP_NAME') {
+          dir ('/home/jenkins/go/src/github/cyberwetware/go-handicraft/charts/go-handicraft') {
             container('go') {
               sh 'jx step changelog --version v\$(cat ../../VERSION)'
 
